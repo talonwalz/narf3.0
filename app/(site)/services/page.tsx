@@ -1,16 +1,17 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Button from "@/components/Button";
 import ConditionFilter from "@/components/ConditionFilter";
 import CtaBand from "@/components/CtaBand";
 import PageHero from "@/components/PageHero";
 import Photo from "@/components/Photo";
+import StemWaveFeatureCard from "@/components/stemwave/StemWaveFeatureCard";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "Services & Conditions We Treat",
   description:
     "Physical therapy for back, neck, shoulder, hip, knee, foot and ankle pain, post-surgical rehab, sports and work injuries, balance disorders and more — in our gym and pool in Cottonwood, AZ.",
-};
+});
 
 const titleCls = "text-[21px] font-semibold";
 const textCls = "leading-[1.55] text-muted";
@@ -43,6 +44,8 @@ export default function Services() {
           </div>
         </div>
       </section>
+
+      <StemWaveFeatureCard />
 
       <section className="section-y bg-white">
         <div className="wrap">

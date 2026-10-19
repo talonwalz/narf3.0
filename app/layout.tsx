@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Serif_Display, Instrument_Sans } from "next/font/google";
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
-import MobileActionBar from "@/components/MobileActionBar";
+import { TITLE_SUFFIX } from "@/lib/metadata";
 import { CLOSE_HOUR, OPEN_HOUR, hours, site } from "@/lib/site";
 import "./globals.css";
 
@@ -25,7 +23,7 @@ export const metadata: Metadata = {
   ...(site.url ? { metadataBase: new URL(site.url) } : {}),
   title: {
     default: `${site.name} | Physical Therapy in Cottonwood, AZ`,
-    template: `%s | ${site.name}`,
+    template: `%s | ${TITLE_SUFFIX}`,
   },
   description,
   openGraph: {
@@ -77,10 +75,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${dmSerif.variable} ${instrumentSans.variable}`}
     >
       <body>
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <MobileActionBar />
+        {children}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

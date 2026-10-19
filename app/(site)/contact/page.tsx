@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Image from "next/image";
 import Button from "@/components/Button";
 import ContactForm from "@/components/ContactForm";
@@ -6,11 +6,11 @@ import { HoursTable, OpenStatus } from "@/components/OpenStatus";
 import PageHero from "@/components/PageHero";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
-  title: "Contact & Request an Appointment",
+export const metadata = pageMetadata({
+  title: "Contact Us & Request an Appointment",
   description:
     "Request a physical therapy appointment, ask an insurance question, or get directions to NARF at 480 S. Willard St, Cottonwood, AZ. Open Tuesday–Friday, 7AM–6PM.",
-};
+});
 
 export default function Contact() {
   return (

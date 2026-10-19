@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Button from "@/components/Button";
 import Eyebrow from "@/components/Eyebrow";
 import FaqAccordion from "@/components/FaqAccordion";
@@ -6,11 +6,11 @@ import Photo from "@/components/Photo";
 import { faq } from "@/lib/faq";
 import { site } from "@/lib/site";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: "New Patient Info & Forms",
   description:
     "Everything you need before your first physical therapy visit at NARF in Cottonwood, AZ: downloadable new patient forms, what to bring, what to expect, and common questions.",
-};
+});
 
 // TODO(clinic): "Bring the essentials" and "Dress to move" copy is new — confirm.
 const steps = [

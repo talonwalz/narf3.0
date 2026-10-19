@@ -1,15 +1,15 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Button from "@/components/Button";
 import Eyebrow from "@/components/Eyebrow";
 import PageHero from "@/components/PageHero";
 import Photo from "@/components/Photo";
 import { founder, team } from "@/lib/team";
 
-export const metadata: Metadata = {
-  title: "Our Team",
+export const metadata = pageMetadata({
+  title: "Our Physical Therapists & Team",
   description:
     "Meet the licensed physical therapists and staff at Northern Arizona Rehabilitation & Fitness, serving Cottonwood, AZ since 2000.",
-};
+});
 
 export default function Team() {
   return (

@@ -1,14 +1,14 @@
-import type { Metadata } from "next";
+import { pageMetadata } from "@/lib/metadata";
 import Button from "@/components/Button";
 import Eyebrow from "@/components/Eyebrow";
 import PageHero from "@/components/PageHero";
 import Photo from "@/components/Photo";
 
-export const metadata: Metadata = {
-  title: "Our Facilities: Gym & Aquatic Therapy Pool",
+export const metadata = pageMetadata({
+  title: "Therapy Gym & Aquatic Pool",
   description:
     "Tour the NARF clinic in Cottonwood, AZ — a fully equipped therapy gym and an aquatic therapy pool under one roof.",
-};
+});
 
 const copyCls = "text-[17px] leading-[1.6] text-muted";
 

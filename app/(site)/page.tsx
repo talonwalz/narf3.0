@@ -5,6 +5,7 @@ import CtaBand from "@/components/CtaBand";
 import Eyebrow from "@/components/Eyebrow";
 import Photo from "@/components/Photo";
 import SectionHeading from "@/components/SectionHeading";
+import StemWavePromo from "@/components/stemwave/StemWavePromo";
 import { AREA_SLUGS, BODY_AREAS, CONDITIONS } from "@/lib/conditions";
 import { site } from "@/lib/site";
 import { testimonials } from "@/lib/testimonials";
@@ -36,8 +37,42 @@ const teamTeaser = [
 export default function Home() {
   return (
     <>
-      {/* Hero */}
-      <section className="section-b pt-[clamp(36px,6vw,88px)]">
+      {/* Hero — phones (< 640px): shorter version; call/book live in MobileActionBar */}
+      <section className="flex flex-col gap-[18px] px-5 pb-10 pt-6 sm:hidden">
+        <h1 className="text-balance font-display text-[38px] leading-[1.02] tracking-[-0.01em]">
+          Physical therapy in Cottonwood, AZ
+        </h1>
+        <div className="relative">
+          <Photo
+            src="/images/narfBuilding.jpeg"
+            alt="The Northern Arizona Rehabilitation and Fitness building in Cottonwood"
+            sizes="100vw"
+            className="aspect-[16/10] rounded-[18px]"
+            preload
+          />
+          <div className="absolute bottom-2.5 left-2.5 flex items-center gap-2 rounded-full bg-white px-3 py-[7px] text-[13px] font-semibold shadow-[0_6px_18px_rgba(0,50,57,0.15)]">
+            <span className="h-2 w-2 flex-none rounded-full bg-orange-bright" />
+            Open Tue – Fri · 7AM – 6PM
+          </div>
+        </div>
+        <div className="flex flex-col gap-2.5">
+          <div className="text-[15px] font-semibold">Where does it hurt?</div>
+          <div className="-mx-5 flex gap-2 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {BODY_AREAS.map((a) => (
+              <Link
+                key={a.label}
+                href={`/services?area=${AREA_SLUGS[a.category]}`}
+                className="inline-flex min-h-11 flex-none items-center whitespace-nowrap rounded-full border border-sand-line bg-white px-4 text-[15px] text-ink"
+              >
+                {a.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Hero — tablet & desktop */}
+      <section className="section-b hidden pt-[clamp(36px,6vw,88px)] sm:block">
         <div className="wrap grid-fit-440 items-center gap-[clamp(36px,5vw,64px)]">
           <div className="flex flex-col gap-[22px]">
             <Eyebrow>Physical therapy · Cottonwood, Arizona</Eyebrow>
@@ -90,6 +125,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <StemWavePromo />
 
       {/* What we treat */}
       <section className="section-y bg-white">

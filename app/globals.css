@@ -32,9 +32,12 @@
   --color-field-line: #d9cfbe;
   --color-placeholder: #7a6f5c;
   --color-placeholder-line: #c9bda8;
+  --color-offer-bg: #fdf0e9;
+  --color-offer-line: #f6cdb8;
 
   --shadow-float: 0 14px 34px rgba(0, 50, 57, 0.14);
   --shadow-bar: 0 -6px 20px rgba(0, 50, 57, 0.08);
+  --shadow-form: 0 24px 60px rgba(0, 0, 0, 0.25);
 }
 
 @layer base {
