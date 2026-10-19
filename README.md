@@ -1,36 +1,36 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# NARF 3.0
 
-## Getting Started
+Marketing site for Northern Arizona Rehabilitation & Fitness (Cottonwood, AZ).
+Next.js App Router + TypeScript + Tailwind CSS v4. Replaces the CRA site in `../narf2.0`.
 
-First, run the development server:
+## Develop
 
 ```bash
+nvm use 20
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Where things live
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- `app/` — one folder per page (`/`, `/services`, `/patient-info`, `/team`, `/contact`, `/facilities`)
+- `components/` — Header, Footer, MobileActionBar, Button, and the client components (ConditionFilter, FaqAccordion, ContactForm, OpenStatus)
+- `lib/site.ts` — phone, address, hours, nav links, EmailJS IDs (single source of truth)
+- `lib/conditions.ts`, `lib/team.ts`, `lib/faq.ts`, `lib/testimonials.ts` — page content
+- `app/globals.css` — design tokens (`@theme`), type styles, and layout utilities (`wrap`, `section-y`, `grid-fit-*`)
+- `public/images`, `public/docs`, `public/videos` — assets
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Notes
 
-## Learn More
+- Tailwind v4 has no `tailwind.config`; colors and the `nav` (1100px) breakpoint are defined in `app/globals.css`.
+- The contact form sends through EmailJS using the same service/template as the old site. Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) before deploying.
+- Old routes redirect in `next.config.ts`.
 
-To learn more about Next.js, take a look at the following resources:
+## Content still needed from the clinic
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Search the code for `TODO(clinic)`:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Accepted insurance plans (`app/patient-info/page.tsx`)
+- Amy Shantz bio + specialties; other staff names/roles/photos (`lib/team.ts`)
+- Review FAQ answers (`lib/faq.ts`) and new checklist copy (`app/patient-info/page.tsx`)
+- Confirm parking copy (`app/contact/page.tsx`)
