@@ -1,8 +1,9 @@
 "use client";
 
-import emailjs from "@emailjs/browser";
 import { useState, type FormEvent } from "react";
-import { emailjsConfig, site } from "@/lib/site";
+import Turnstile from "@/components/Turnstile";
+import { submitForm } from "@/lib/contact";
+import { site } from "@/lib/site";
 import { painAreas, stemwaveOffer } from "@/lib/stemwave";
 
 type Status = "idle" | "sending" | "sent" | "error";
@@ -14,8 +15,6 @@ declare global {
   }
 }
 
-const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
-
 const labelCls = "flex flex-col gap-1.5 text-sm font-semibold";
 const inputCls =
   "min-h-[50px] rounded-xl border border-field-line bg-field px-3.5 text-base font-normal text-ink placeholder:text-muted-2/70";
@@ -23,50 +22,30 @@ const inputCls =
 export default function StemWaveLeadForm() {
   const [area, setArea] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("idle");
+  const [token, setToken] = useState<string | null>(null);
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-
-    // Honeypot: real visitors never see or fill this field.
-    if (data.get("website")) {
-      setStatus("sent");
-      return;
-    }
-
-    const name = String(data.get("name") ?? "").trim();
-    const phone = String(data.get("phone") ?? "").trim();
-    const email = String(data.get("email") ?? "").trim();
-    const query = new URLSearchParams(window.location.search);
-    const utm = UTM_KEYS.filter((k) => query.get(k)).map(
-      (k) => `${k}: ${query.get(k)}`,
-    );
+    if (!token) return;
+    const form = e.currentTarget;
 
     setStatus("sending");
     try {
-      // Reuses the main contact form's EmailJS template and its variables.
-      await emailjs.send(
-        emailjsConfig.serviceId,
-        emailjsConfig.templateId,
-        {
-          first: name,
-          last: "",
-          email: email || "(not provided)",
-          "phone number": phone,
-          subject: `StemWave consultation request — ${name}`,
-          message: [
-            `Pain area: ${area ?? "Not specified"}`,
-            "Source: stemwave-campaign",
-            ...utm,
-          ].join("\n"),
-        },
-        { publicKey: emailjsConfig.publicKey },
-      );
+      await submitForm("stemwave", token, {
+        ...Object.fromEntries(new FormData(form)),
+        painArea: area,
+        utm: Object.fromEntries(new URLSearchParams(window.location.search)),
+      });
+      setToken(null);
       setStatus("sent");
       window.gtag?.("event", "generate_lead", { form: "stemwave-campaign" });
       window.fbq?.("track", "Lead");
     } catch (err) {
       console.error("StemWave lead form failed to send", err);
+      // The token was used up by this attempt, so get a fresh one.
+      setToken(null);
+      setCaptchaKey((k) => k + 1);
       setStatus("error");
     }
   }
@@ -180,6 +159,8 @@ export default function StemWaveLeadForm() {
         </label>
       </div>
 
+      <Turnstile onToken={setToken} passed={!!token} resetKey={captchaKey} />
+
       {status === "error" && (
         <div
           role="alert"
@@ -195,7 +176,7 @@ export default function StemWaveLeadForm() {
 
       <button
         type="submit"
-        disabled={sending}
+        disabled={sending || !token}
         className="min-h-[54px] rounded-full bg-orange text-[17px] font-semibold text-white transition-colors hover:bg-orange-hover disabled:cursor-not-allowed disabled:opacity-70"
       >
         {sending ? "Sending…" : stemwaveOffer.cta}

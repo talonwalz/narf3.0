@@ -48,11 +48,3 @@ export const hours = [
 ] as const;
 
 export const OPEN_HOURS_LABEL = "7AM – 6PM";
-
-// EmailJS (same service/template as the old narf2.0 contact form).
-export const emailjsConfig = {
-  serviceId: process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID ?? "gmail",
-  templateId: process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID ?? "template_7nlu4to",
-  publicKey:
-    process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY ?? "user_xEWI2orbMXf48SBIwv08s",
-};

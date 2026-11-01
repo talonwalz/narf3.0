@@ -25,7 +25,7 @@ npm run dev
 ## Notes
 
 - Tailwind v4 has no `tailwind.config`; colors and the `nav` (1100px) breakpoint are defined in `app/globals.css`.
-- The contact form sends through EmailJS using the same service/template as the old site. Set `NEXT_PUBLIC_SITE_URL` (see `.env.example`) before deploying.
+- Both forms post to `app/api/contact/route.ts`, which checks the Cloudflare Turnstile token and then sends through EmailJS using the same service/template as the old site. See `.env.example` for the required keys; without them the forms won't send. Set `NEXT_PUBLIC_SITE_URL` before deploying too.
 - Old routes redirect in `next.config.ts`.
 
 ## Content still needed from the clinic
@@ -33,7 +33,7 @@ npm run dev
 Search the code for `TODO(clinic)`:
 
 - Accepted insurance plans (`app/(site)/patient-info/page.tsx`)
-- Amy Shantz bio + specialties; other staff names/roles/photos (`lib/team.ts`)
+- Staff names/roles/photos/bios (`lib/team.ts`)
 - Review FAQ answers (`lib/faq.ts`) and new checklist copy (`app/(site)/patient-info/page.tsx`)
 - Confirm parking copy (`app/(site)/contact/page.tsx`)
 - StemWave (`lib/stemwave.ts`): offer wording (or set `show: false`), insurance/pricing answer, contraindications reviewed by a PT, condition list, session wording, device photos (`public/images/stemwave/`), and "StemWave®" trademark usage

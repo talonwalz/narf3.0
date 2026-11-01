@@ -1,31 +1,10 @@
 "use client";
 
-import emailjs from "@emailjs/browser";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, type FormEvent } from "react";
-import { emailjsConfig, site } from "@/lib/site";
-
-// `value` is what the EmailJS template receives (same strings as the old site).
-const SUBJECTS = [
-  {
-    slug: "appointment",
-    label: "Schedule an appointment",
-    value: "Schedule an Appointment",
-    hint: "Tell us a little about what’s going on and which days work best (Tue–Fri).",
-  },
-  {
-    slug: "insurance",
-    label: "Insurance question",
-    value: "Insurance Question",
-    hint: "Which insurance plan do you have, and what would you like to know?",
-  },
-  {
-    slug: "employment",
-    label: "Employment",
-    value: "Employment Opportunities",
-    hint: "Which role are you interested in? Tell us about yourself.",
-  },
-] as const;
+import Turnstile from "@/components/Turnstile";
+import { SUBJECTS, submitForm } from "@/lib/contact";
+import { site } from "@/lib/site";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
@@ -36,28 +15,28 @@ const inputCls =
 function Form({ initialSubject }: { initialSubject: number }) {
   const [subject, setSubject] = useState(initialSubject);
   const [status, setStatus] = useState<Status>("idle");
+  const [token, setToken] = useState<string | null>(null);
+  const [captchaKey, setCaptchaKey] = useState(0);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (!token) return;
     const form = e.currentTarget;
-
-    // Honeypot: real visitors never see or fill this field.
-    if (new FormData(form).get("website")) {
-      setStatus("sent");
-      return;
-    }
 
     setStatus("sending");
     try {
-      await emailjs.sendForm(
-        emailjsConfig.serviceId,
-        emailjsConfig.templateId,
-        form,
-        { publicKey: emailjsConfig.publicKey },
+      await submitForm(
+        "contact",
+        token,
+        Object.fromEntries(new FormData(form)),
       );
+      setToken(null);
       setStatus("sent");
     } catch (err) {
       console.error("Contact form failed to send", err);
+      // The token was used up by this attempt, so get a fresh one.
+      setToken(null);
+      setCaptchaKey((k) => k + 1);
       setStatus("error");
     }
   }
@@ -118,8 +97,7 @@ function Form({ initialSubject }: { initialSubject: number }) {
         <input type="hidden" name="subject" value={SUBJECTS[subject].value} />
       </fieldset>
 
-      {/* Field names match the existing EmailJS template variables. */}
-      <div className="grid-fit-180 gap-4">
+            <div className="grid-fit-180 gap-4">
         <label className={labelCls}>
           First name
           <input
@@ -155,7 +133,7 @@ function Form({ initialSubject }: { initialSubject: number }) {
       <label className={labelCls}>
         Phone
         <input
-          name="phone number"
+          name="phone"
           type="tel"
           required
           autoComplete="tel"
@@ -181,6 +159,8 @@ function Form({ initialSubject }: { initialSubject: number }) {
         </label>
       </div>
 
+      <Turnstile onToken={setToken} passed={!!token} resetKey={captchaKey} />
+
       {status === "error" && (
         <div
           role="alert"
@@ -196,7 +176,7 @@ function Form({ initialSubject }: { initialSubject: number }) {
 
       <button
         type="submit"
-        disabled={sending}
+        disabled={sending || !token}
         className="min-h-[54px] rounded-full bg-orange text-[17px] font-semibold text-white transition-colors hover:bg-orange-hover disabled:cursor-not-allowed disabled:opacity-70"
       >
         {sending ? "Sending…" : "Send message"}
