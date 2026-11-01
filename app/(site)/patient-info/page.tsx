@@ -3,6 +3,7 @@ import Button from "@/components/Button";
 import Eyebrow from "@/components/Eyebrow";
 import FaqAccordion from "@/components/FaqAccordion";
 import Photo from "@/components/Photo";
+import SectionHeading from "@/components/SectionHeading";
 import { faq } from "@/lib/faq";
 import { site } from "@/lib/site";
 
@@ -14,9 +15,10 @@ export const metadata = pageMetadata({
 
 // TODO(clinic): "Bring the essentials" and "Dress to move" copy is new — confirm.
 const steps = [
-  { n: 2, title: "Bring the essentials", text: "Your completed forms, photo ID, insurance card, and any referral or prescription from your doctor." },
-  { n: 3, title: "Arrive a few minutes early", text: "If you’re completing forms at our office, plan to arrive 10–15 minutes before your appointment." },
-  { n: 4, title: "Dress to move", text: "Wear comfortable clothes you can exercise in — and bring a swimsuit if your plan includes the pool." },
+  { title: "Download & complete your forms", text: "Print them at home and bring them to your appointment." },
+  { title: "Bring the essentials", text: "Your completed forms, photo ID, insurance card, and any referral or prescription from your doctor." },
+  { title: "Arrive a few minutes early", text: "If you’re completing forms at our office, plan to arrive 10–15 minutes before your appointment." },
+  { title: "Dress to move", text: "Wear comfortable clothes you can exercise in — and bring a swimsuit if your plan includes the pool." },
 ];
 
 const expect = [
@@ -24,9 +26,6 @@ const expect = [
   { title: "An individualized treatment plan", text: "Safe, effective and creative treatment — in the gym, the pool, or both." },
   { title: "Close supervision, every visit", text: "Your licensed physical therapist stays actively involved throughout your care." },
 ];
-
-const downloadCls =
-  "flex min-h-14 items-center justify-between rounded-[14px] px-5 font-semibold transition-colors";
 
 export default function PatientInfo() {
   return (
@@ -50,57 +49,41 @@ export default function PatientInfo() {
       </section>
 
       {/* Checklist */}
-      <section className="section-b">
-        <div className="wrap grid-fit-340 gap-4">
-          <div className="row-span-2 flex flex-col gap-3.5 rounded-[20px] bg-deep p-[clamp(24px,3vw,36px)] text-white">
-            <div className="font-display text-[56px] leading-none text-orange-soft">
-              1
-            </div>
-            <h2 className="text-2xl font-semibold">
-              Download &amp; complete your forms
-            </h2>
-            <p className="leading-[1.55] text-deep-tint">
-              Print them at home and bring them to your appointment.
-            </p>
-            <div className="mt-auto flex flex-col gap-2.5 pt-3">
-              <a
-                href="/docs/NewPatientPacket.pdf"
-                target="_blank"
-                rel="noopener"
-                className={`${downloadCls} bg-white text-deep hover:bg-deep-tint`}
+      <section className="section-y bg-deep text-white">
+        <div className="wrap">
+          <SectionHeading
+            eyebrow="Before your visit"
+            eyebrowTone="dark"
+            title="Four simple steps."
+            className="mb-11"
+          />
+          <ol className="grid gap-[clamp(24px,4vw,48px)] sm:grid-cols-2 lg:grid-cols-4">
+            {steps.map((s, i) => (
+              <li
+                key={s.title}
+                className="flex flex-col gap-2.5 border-t border-deep-tint/25 pt-[22px]"
               >
-                New Patient Packet
-                <span className="text-[13px] font-medium text-muted-2">
-                  PDF ↓
-                </span>
-              </a>
-              <a
-                href="/docs/Patientforms.pdf"
-                target="_blank"
-                rel="noopener"
-                className={`${downloadCls} border border-white/25 bg-white/10 text-white hover:bg-white/20`}
-              >
-                Patient Forms
-                <span className="text-[13px] font-medium text-deep-tint">
-                  PDF ↓
-                </span>
-              </a>
-            </div>
-          </div>
-          {steps.map((s) => (
-            <div
-              key={s.n}
-              className="flex gap-[18px] rounded-[20px] border border-sand-line-2 bg-white p-[clamp(22px,3vw,30px)]"
-            >
-              <div className="flex-none font-display text-[40px] leading-none text-orange">
-                {s.n}
-              </div>
-              <div className="flex flex-col gap-1.5">
-                <h2 className="text-xl font-semibold">{s.title}</h2>
-                <p className="leading-[1.55] text-muted">{s.text}</p>
-              </div>
-            </div>
-          ))}
+                <div className="font-display text-[52px] leading-none text-orange-soft">
+                  {i + 1}
+                </div>
+                <h2 className="text-[21px] font-semibold">{s.title}</h2>
+                <p className="leading-[1.55] text-deep-tint">{s.text}</p>
+                {i === 0 && (
+                  <a
+                    href="/docs/NewPatientPacket.pdf"
+                    target="_blank"
+                    rel="noopener"
+                    className="mt-2 flex min-h-14 items-center justify-between rounded-[14px] bg-white px-5 font-semibold text-deep transition-colors hover:bg-deep-tint"
+                  >
+                    New Patient Packet
+                    <span className="text-[13px] font-medium text-muted-2">
+                      PDF ↓
+                    </span>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 

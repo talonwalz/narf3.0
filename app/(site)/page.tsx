@@ -31,7 +31,6 @@ const spaces = [
 
 const teamTeaser = [
   { name: "Tarrin Walz, PT, MS", role: "Physical Therapist & Owner", image: "/images/TarrinNew.jpg", alt: "Tarrin Walz" },
-  { name: "Amy Shantz, PT, DPT", role: "Physical Therapist", image: "/images/AmyNew.jpg", alt: "Amy Shantz" },
 ];
 
 export default function Home() {
@@ -272,7 +271,9 @@ export default function Home() {
               Meet our team →
             </Link>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div
+            className={`grid gap-4 ${teamTeaser.length > 1 ? "grid-cols-2" : "w-full max-w-[320px] justify-self-center"}`}
+          >
             {teamTeaser.map((p) => (
               <div key={p.name}>
                 <Photo

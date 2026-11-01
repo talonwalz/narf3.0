@@ -33,12 +33,6 @@ export const founder = {
 
 export const team: TeamMember[] = [
   {
-    name: "Amy Shantz, PT, DPT",
-    role: "Physical Therapist",
-    image: "/images/AmyNew.jpg",
-    contentNeeded: "Content needed: Amy’s bio & specialties",
-  },
-  {
     name: "Team member",
     role: "Role · add as needed",
     placeholderLabel: "staff portrait",
