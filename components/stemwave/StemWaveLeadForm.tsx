@@ -2,7 +2,8 @@
 
 import { useState, type FormEvent } from "react";
 import Turnstile from "@/components/Turnstile";
-import { submitForm } from "@/lib/contact";
+import { FieldError, useFieldErrors } from "@/components/useFieldErrors";
+import { onPhoneChange, submitForm } from "@/lib/contact";
 import { site } from "@/lib/site";
 import { painAreas, stemwaveOffer } from "@/lib/stemwave";
 
@@ -17,7 +18,13 @@ declare global {
 
 const labelCls = "flex flex-col gap-1.5 text-sm font-semibold";
 const inputCls =
-  "min-h-[50px] rounded-xl border border-field-line bg-field px-3.5 text-base font-normal text-ink placeholder:text-muted-2/70";
+  "min-h-[50px] rounded-xl border border-field-line bg-field px-3.5 text-base font-normal text-ink placeholder:text-muted-2/70 aria-invalid:border-orange";
+
+const REQUIRED = {
+  name: "Please enter your full name.",
+  phone: "Please enter your phone number.",
+  email: "Please enter your email address.",
+};
 
 export default function StemWaveLeadForm() {
   const [area, setArea] = useState<string | null>(null);
@@ -25,16 +32,20 @@ export default function StemWaveLeadForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [token, setToken] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
+  const { errors, formProps, invalid, validate } = useFieldErrors(REQUIRED);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!token) return;
-    // The pain area pills are buttons, so the browser can't enforce this one.
+    const form = e.currentTarget;
+    const fieldsOk = validate(form);
+    // The pain area pills are buttons, so they're checked separately.
     if (!area) {
       setAreaMissing(true);
+      form.querySelector("fieldset button")?.scrollIntoView({ block: "center" });
       return;
     }
-    const form = e.currentTarget;
+    if (!fieldsOk) return;
 
     setStatus("sending");
     try {
@@ -87,7 +98,7 @@ export default function StemWaveLeadForm() {
   const sending = status === "sending";
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-3.5">
+    <form onSubmit={onSubmit} {...formProps} className="flex flex-col gap-3.5">
       {stemwaveOffer.show && (
         <div className="rounded-[14px] border border-offer-line bg-offer-bg px-3.5 py-3 text-[15px] font-semibold text-orange-hover">
           {stemwaveOffer.text}
@@ -122,45 +133,48 @@ export default function StemWaveLeadForm() {
             );
           })}
         </div>
-        {areaMissing && (
-          <p role="alert" className="text-sm font-semibold text-orange-hover">
-            Please choose where the pain is.
-          </p>
-        )}
+        <FieldError message={areaMissing ? "Please choose where the pain is." : undefined} />
       </fieldset>
 
       <label className={labelCls}>
         Full name
         <input
           name="name"
+          aria-invalid={invalid("name")}
           required
           autoComplete="name"
           placeholder="Jane Doe"
           className={inputCls}
         />
+        <FieldError message={errors.name} />
       </label>
       <div className="grid-fit-170 gap-3.5">
         <label className={labelCls}>
           Phone
           <input
             name="phone"
+            aria-invalid={invalid("phone")}
             type="tel"
             required
             autoComplete="tel"
+            onChange={onPhoneChange}
             placeholder="(928) 555-0123"
             className={inputCls}
           />
+          <FieldError message={errors.phone} />
         </label>
         <label className={labelCls}>
           Email
           <input
             name="email"
+            aria-invalid={invalid("email")}
             type="email"
             required
             autoComplete="email"
             placeholder="you@email.com"
             className={inputCls}
           />
+          <FieldError message={errors.email} />
         </label>
       </div>
 

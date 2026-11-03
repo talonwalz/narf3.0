@@ -1,11 +1,10 @@
 import { NextResponse } from "next/server";
-import { SUBJECTS } from "@/lib/contact";
+import { SUBJECTS, isValidEmail, isValidPhone } from "@/lib/contact";
 import { painAreas } from "@/lib/stemwave";
 
 const SITEVERIFY_URL =
   "https://challenges.cloudflare.com/turnstile/v0/siteverify";
 const EMAILJS_URL = "https://api.emailjs.com/api/v1.0/email/send";
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const UTM_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"];
 
 type Fields = Record<string, unknown>;
@@ -32,7 +31,7 @@ function contactParams(f: Fields): TemplateParams | null {
   const phone = line(f.phone, 40);
   const subject = SUBJECTS.find((s) => s.value === f.subject)?.value;
   const message = text(f.message, 5000);
-  if (!first || !last || !phone || !EMAIL_RE.test(email) || !subject || !message) return null;
+  if (!first || !last || !isValidPhone(phone) || !isValidEmail(email) || !subject || !message) return null;
   return {
     first,
     last,
@@ -48,7 +47,7 @@ function stemwaveParams(f: Fields): TemplateParams | null {
   const phone = line(f.phone, 40);
   const email = line(f.email);
   const painArea = painAreas.find((a) => a === f.painArea);
-  if (!name || !phone || !EMAIL_RE.test(email) || !painArea) return null;
+  if (!name || !isValidPhone(phone) || !isValidEmail(email) || !painArea) return null;
 
   const utm = (f.utm ?? {}) as Fields;
   return {

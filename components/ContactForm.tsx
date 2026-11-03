@@ -3,25 +3,35 @@
 import { useSearchParams } from "next/navigation";
 import { Suspense, useState, type FormEvent } from "react";
 import Turnstile from "@/components/Turnstile";
-import { SUBJECTS, submitForm } from "@/lib/contact";
+import { SUBJECTS, onPhoneChange, submitForm } from "@/lib/contact";
 import { site } from "@/lib/site";
+import { FieldError, useFieldErrors } from "./useFieldErrors";
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 const labelCls = "flex flex-col gap-1.5 text-sm font-semibold";
 const inputCls =
-  "min-h-[50px] rounded-xl border border-field-line bg-field px-3.5 text-base font-normal text-ink placeholder:text-muted-2/70";
+  "min-h-[50px] rounded-xl border border-field-line bg-field px-3.5 text-base font-normal text-ink placeholder:text-muted-2/70 aria-invalid:border-orange";
+
+const REQUIRED = {
+  first: "Please enter your first name.",
+  last: "Please enter your last name.",
+  email: "Please enter your email address.",
+  phone: "Please enter your phone number.",
+  message: "Please enter a message.",
+};
 
 function Form({ initialSubject }: { initialSubject: number }) {
   const [subject, setSubject] = useState(initialSubject);
   const [status, setStatus] = useState<Status>("idle");
   const [token, setToken] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
+  const { errors, formProps, invalid, validate } = useFieldErrors(REQUIRED);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!token) return;
     const form = e.currentTarget;
+    if (!token || !validate(form)) return;
 
     setStatus("sending");
     try {
@@ -69,7 +79,7 @@ function Form({ initialSubject }: { initialSubject: number }) {
   const sending = status === "sending";
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4">
+    <form onSubmit={onSubmit} {...formProps} className="flex flex-col gap-4">
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-[15px] font-semibold">
           What’s this about?
@@ -102,54 +112,65 @@ function Form({ initialSubject }: { initialSubject: number }) {
           First name
           <input
             name="first"
+            aria-invalid={invalid("first")}
             required
             autoComplete="given-name"
             placeholder="Jane"
             className={inputCls}
           />
+          <FieldError message={errors.first} />
         </label>
         <label className={labelCls}>
           Last name
           <input
             name="last"
+            aria-invalid={invalid("last")}
             required
             autoComplete="family-name"
             placeholder="Doe"
             className={inputCls}
           />
+          <FieldError message={errors.last} />
         </label>
       </div>
       <label className={labelCls}>
         Email
         <input
           name="email"
+          aria-invalid={invalid("email")}
           type="email"
           required
           autoComplete="email"
           placeholder="you@email.com"
           className={inputCls}
         />
+        <FieldError message={errors.email} />
       </label>
       <label className={labelCls}>
         Phone
         <input
           name="phone"
+          aria-invalid={invalid("phone")}
           type="tel"
           required
           autoComplete="tel"
+          onChange={onPhoneChange}
           placeholder="(928) 555-0123"
           className={inputCls}
         />
+        <FieldError message={errors.phone} />
       </label>
       <label className={labelCls}>
         Message
         <textarea
           name="message"
+          aria-invalid={invalid("message")}
           rows={4}
           required
           placeholder={SUBJECTS[subject].hint}
           className={`${inputCls} resize-y py-3`}
         />
+        <FieldError message={errors.message} />
       </label>
 
       {/* Honeypot */}
