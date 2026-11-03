@@ -31,14 +31,15 @@ function contactParams(f: Fields): TemplateParams | null {
   const email = line(f.email);
   const phone = line(f.phone, 40);
   const subject = SUBJECTS.find((s) => s.value === f.subject)?.value;
-  if (!first || !last || !phone || !EMAIL_RE.test(email) || !subject) return null;
+  const message = text(f.message, 5000);
+  if (!first || !last || !phone || !EMAIL_RE.test(email) || !subject || !message) return null;
   return {
     first,
     last,
     email,
     "phone number": phone,
     subject,
-    message: text(f.message, 5000),
+    message,
   };
 }
 
@@ -46,14 +47,14 @@ function stemwaveParams(f: Fields): TemplateParams | null {
   const name = line(f.name, 200);
   const phone = line(f.phone, 40);
   const email = line(f.email);
-  if (!name || !phone || (email && !EMAIL_RE.test(email))) return null;
+  const painArea = painAreas.find((a) => a === f.painArea);
+  if (!name || !phone || !EMAIL_RE.test(email) || !painArea) return null;
 
   const utm = (f.utm ?? {}) as Fields;
-  const painArea = painAreas.find((a) => a === f.painArea) ?? "Not specified";
   return {
     first: name,
     last: "",
-    email: email || "(not provided)",
+    email,
     "phone number": phone,
     subject: `StemWave consultation request — ${name}`,
     message: [

@@ -146,6 +146,7 @@ function Form({ initialSubject }: { initialSubject: number }) {
         <textarea
           name="message"
           rows={4}
+          required
           placeholder={SUBJECTS[subject].hint}
           className={`${inputCls} resize-y py-3`}
         />

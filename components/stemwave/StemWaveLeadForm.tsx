@@ -21,6 +21,7 @@ const inputCls =
 
 export default function StemWaveLeadForm() {
   const [area, setArea] = useState<string | null>(null);
+  const [areaMissing, setAreaMissing] = useState(false);
   const [status, setStatus] = useState<Status>("idle");
   const [token, setToken] = useState<string | null>(null);
   const [captchaKey, setCaptchaKey] = useState(0);
@@ -28,6 +29,11 @@ export default function StemWaveLeadForm() {
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!token) return;
+    // The pain area pills are buttons, so the browser can't enforce this one.
+    if (!area) {
+      setAreaMissing(true);
+      return;
+    }
     const form = e.currentTarget;
 
     setStatus("sending");
@@ -101,7 +107,10 @@ export default function StemWaveLeadForm() {
                 key={a}
                 type="button"
                 aria-pressed={on}
-                onClick={() => setArea(on ? null : a)}
+                onClick={() => {
+                  setArea(on ? null : a);
+                  setAreaMissing(false);
+                }}
                 className={`min-h-10 rounded-full border px-3.5 text-sm transition-colors ${
                   on
                     ? "border-deep bg-deep font-semibold text-white"
@@ -113,6 +122,11 @@ export default function StemWaveLeadForm() {
             );
           })}
         </div>
+        {areaMissing && (
+          <p role="alert" className="text-sm font-semibold text-orange-hover">
+            Please choose where the pain is.
+          </p>
+        )}
       </fieldset>
 
       <label className={labelCls}>
@@ -138,12 +152,11 @@ export default function StemWaveLeadForm() {
           />
         </label>
         <label className={labelCls}>
-          <span>
-            Email <span className="font-normal text-muted-2">(optional)</span>
-          </span>
+          Email
           <input
             name="email"
             type="email"
+            required
             autoComplete="email"
             placeholder="you@email.com"
             className={inputCls}
