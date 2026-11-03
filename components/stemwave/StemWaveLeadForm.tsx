@@ -61,7 +61,7 @@ export default function StemWaveLeadForm() {
         </div>
         <div className="font-display text-[30px]">You’re on the list</div>
         <p className="max-w-[320px] leading-[1.55] text-muted">
-          We’ll call you within 1 business day to set up your StemWave
+          We’ll call you within 1–2 business days to set up your StemWave
           consultation.
         </p>
         <button
@@ -182,7 +182,7 @@ export default function StemWaveLeadForm() {
         {sending ? "Sending…" : stemwaveOffer.cta}
       </button>
       <p className="text-[13px] leading-normal text-muted-2">
-        We’ll call you within 1 business day to schedule. Tue–Fri, 7AM–6PM.
+        We’ll call you within 1–2 business days to schedule. Tue–Fri, 7AM–6PM.
       </p>
     </form>
   );
