@@ -5,7 +5,7 @@ import type { FaqItem } from "./faq";
 
 export const stemwaveOffer = {
   show: true,
-  text: "Introductory offer: free 15-minute StemWave consultation", // [confirm]
+  text: "Your initial StemWave consultation is just $49.00",
   cta: "Book a StemWave consultation",
   ctaShort: "Book StemWave",
 };
@@ -37,7 +37,7 @@ export const campaignBullets = [
 
 // [confirm] session/plan wording
 const stepsBase = [
-  { title: "Consultation", text: "We review your history and goals and make sure StemWave is a good fit." },
+  { title: "Consultation", text: "For just $49.00, we review your history and goals and make sure StemWave is a good fit." },
   { title: "Mapping", text: "Your therapist uses the device to pinpoint the most sensitive areas." },
   { title: "Treatment", text: "Focused acoustic waves are delivered to the area — usually just a few minutes." },
 ];
@@ -90,7 +90,7 @@ export const stemwaveFaq: FaqItem[] = [
   {
     // [confirm] placeholder — replace with the real pricing/coverage policy
     question: "Is it covered by insurance?",
-    answer: "Acoustic wave therapy is often not covered by insurance. Call us and we’ll walk you through pricing and packages.",
+    answer: "Acoustic wave therapy is often not covered by insurance. Your initial consultation is just $49.00. Call us and we’ll walk you through pricing and packages.",
   },
   {
     // [confirm] contraindications must be reviewed by a PT
